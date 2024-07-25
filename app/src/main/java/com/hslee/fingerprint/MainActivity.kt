@@ -4,7 +4,10 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
+import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
@@ -21,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var executor: Executor
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
+    private var captureFlag = true
 
     private val activityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -41,6 +45,19 @@ class MainActivity : AppCompatActivity() {
         binding.btnFinger.setOnClickListener {
             authenticateToEncrypt()
         }
+
+        //캡처 on/off
+        binding.btnCapture.setOnClickListener {
+            if (captureFlag) {
+                binding.btnCapture.text = "capture_off"
+                screenCaptureDisable()
+                captureFlag = false
+            } else {
+                binding.btnCapture.text = "capture_on"
+                screenCaptureEnable()
+                captureFlag = true
+            }
+        }
     }
 
     private fun authenticateToEncrypt() = with(binding) {
@@ -60,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton("취소") { dialog, which -> dialog.cancel() }
                 dialogBuilder.show()
             }
+
             else -> status = "실패"
 
         }
@@ -104,24 +122,40 @@ class MainActivity : AppCompatActivity() {
 
     private fun setBiometricPrompt(): BiometricPrompt {
         executor = ContextCompat.getMainExecutor(this)
-        biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+        biometricPrompt =
+            BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
 
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                super.onAuthenticationError(errorCode, errString)
-                binding.tvStatus.text = "지문 인식 에러 : $errString"
-            }
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                    super.onAuthenticationError(errorCode, errString)
+                    binding.tvStatus.text = "지문 인식 에러 : $errString"
+                }
 
-            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                super.onAuthenticationSucceeded(result)
-                binding.tvStatus.text = "지문 인식 성공"
-            }
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    binding.tvStatus.text = "지문 인식 성공"
+                }
 
-            override fun onAuthenticationFailed() {
-                super.onAuthenticationFailed()
-                binding.tvStatus.text = "지문 인식 실패"
-            }
-        })
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    binding.tvStatus.text = "지문 인식 실패"
+                }
+            })
 
         return biometricPrompt
+    }
+
+    fun screenCaptureEnable() {
+        //캡쳐 on
+        window.clearFlags(
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
+    }
+
+    fun screenCaptureDisable() {
+        //캡쳐 off
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
     }
 }

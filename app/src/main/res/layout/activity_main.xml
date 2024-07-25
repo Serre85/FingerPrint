@@ -27,4 +27,15 @@
         app:layout_constraintBottom_toTopOf="@id/btn_finger"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/btn_capture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="capture_on"
+        android:textSize="17dp"
+        android:layout_marginBottom="150dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
