@@ -2,9 +2,11 @@ package com.hslee.fingerprint
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import com.hslee.fingerprint.databinding.ActivityMainBinding
 import java.util.concurrent.Executor
 
@@ -23,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var biometricPrompt: BiometricPrompt
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private var captureFlag = true
+    private var statusFlag = true
 
     private val activityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -55,6 +59,12 @@ class MainActivity : AppCompatActivity() {
                 screenCaptureEnable()
                 captureFlag = true
             }
+        }
+
+        //status bar color change
+        binding.btnStatus.setOnClickListener {
+            changeStatusBar(statusFlag)
+            statusFlag = !statusFlag
         }
     }
 
@@ -155,5 +165,22 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE
         )
+    }
+
+    fun changeStatusBar(isShow: Boolean) {
+        //statusBar 영역까지 activity 화면 보여주기
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        //statusBar 및 icon 색상 변경
+        if (isShow) {
+            window.statusBarColor = Color.TRANSPARENT
+            WindowCompat.getInsetsController(window, window.decorView).apply {
+                isAppearanceLightStatusBars = true
+            }
+        } else {
+            window.statusBarColor = Color.RED
+            WindowCompat.getInsetsController(window, window.decorView).apply {
+                isAppearanceLightStatusBars = false
+            }
+        }
     }
 }
