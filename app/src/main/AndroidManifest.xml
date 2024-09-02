@@ -41,6 +41,11 @@
                 <action android:name="com.hslee.fingerprint.WIDGET_1" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".CardViewActivity"
+            android:theme="@style/Theme.FingerPrint">
+        </activity>
     </application>
 
 </manifest>

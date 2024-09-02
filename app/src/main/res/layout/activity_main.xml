@@ -66,6 +66,16 @@
                     app:layout_constraintEnd_toEndOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/btnCardView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/teal_200"
+                android:padding="10dp"
+                android:gravity="center"
+                android:text="cardView"
+                android:textSize="17dp"
+                android:layout_marginBottom="50dp"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

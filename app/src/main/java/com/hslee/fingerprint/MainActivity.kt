@@ -48,6 +48,11 @@ class MainActivity : AppCompatActivity() {
             authenticateToEncrypt()
         }
 
+        //CardView
+        binding.btnCardView.setOnClickListener {
+            startActivity(Intent(this, CardViewActivity::class.java))
+        }
+
         //캡처 on/off
         binding.btnCapture.setOnClickListener {
             if (captureFlag) {
